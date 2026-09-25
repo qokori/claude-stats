@@ -1,101 +1,106 @@
 # claude-stats
 
-Расширение GNOME Shell «Claude Usage»: лимиты тарифа Claude и расход токенов Claude Code в верхней панели.
+**Claude Usage** is a GNOME Shell extension that shows your Claude plan limits and Claude Code token usage in the top
+bar.
 
-## Что показывает
+The interface and the installer's messages are in Russian.
 
-В панели: иконка и загрузка лимитов «сессия · неделя» в процентах, например `12% · 40%`.
-При 75% цифры становятся оранжевыми, при 90% — красными.
+## What it shows
 
-Меню открывается наведением, а по клику закрепляется. В нём:
+The top bar shows an icon and your session and weekly limit usage as percentages, e.g. `12% · 40%`. The numbers turn
+orange at 75% and red at 90%.
 
-- **Тариф** (Pro, Max 5×, Max 20×) и **лимиты** с прогресс-барами и временем сброса: сессия за 5 часов, неделя
-  по всем моделям, недельные лимиты по отдельным моделям, разбивка недели по Claude Code, чатам и Cowork,
-  доп. кредиты (если включены).
-- **Токены Claude Code** за текущую сессию, сегодня, неделю, 30 дней и всё время: всего, выход, число запросов.
-- **Подробно за сегодня / за неделю**: вход, выход, запись и чтение кэша, топ-5 моделей и проектов.
-- Ссылка на страницу лимитов на claude.ai и кнопка обновления.
+Hovering over the icon opens a menu, and clicking pins it open. The menu contains:
 
-Если данные не удалось получить (токен истёк, нет сети, API просит подождать), вверху меню появится предупреждение.
+- **Your plan** (Pro, Max 5×, Max 20×) and **limits** with progress bars and reset times: the 5-hour session, the
+  weekly limit across all models, per-model weekly limits, the weekly breakdown by Claude Code, chats and Cowork, and
+  extra credits if they're enabled.
+- **Claude Code tokens** for the current session, today, this week, the last 30 days and all time: total, output and
+  number of requests.
+- **Details for today and this week**: input, output, cache writes and reads, and the top 5 models and projects.
+- A link to the usage page on claude.ai and a refresh button.
 
-## Требования
+If the data can't be fetched (the token expired, there's no network, or the API asks to wait), a warning appears at the
+top of the menu.
 
-- GNOME Shell 48, 49 или 50.
-- `python3` (только стандартная библиотека).
-- [Claude Code](https://docs.claude.com/en/docs/claude-code), вход через подписку claude.ai (`claude`, затем
-  `/login`). Без входа лимиты тарифа не показываются, но статистика токенов по локальным логам работает.
+## Requirements
 
-## Установка
+- GNOME Shell 48, 49 or 50.
+- `git` and `python3` (standard library only).
+- [Claude Code](https://docs.claude.com/en/docs/claude-code), signed in with a claude.ai subscription (run `claude`,
+  then `/login`). Without it, plan limits aren't shown, but token stats from local logs still work.
+
+## Installation
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/qokori/claude-stats/main/install.sh | bash
 ```
 
-Если не хотите запускать скрипт из сети, склонируйте репозиторий и запустите его локально:
+If you'd rather not run a script straight from the internet, clone the repository and run it locally:
 
 ```bash
 git clone https://github.com/qokori/claude-stats.git ~/.local/share/gnome-shell/extensions/claude-usage@neorcage
 ~/.local/share/gnome-shell/extensions/claude-usage@neorcage/install.sh
 ```
 
-Скрипт `install.sh`:
+`install.sh`:
 
-- проверяет зависимости и версию GNOME Shell;
-- клонирует репозиторий в `~/.local/share/gnome-shell/extensions/claude-usage@neorcage`;
-- сразу включает расширение, поэтому отдельно включать его в «Расширениях» не нужно;
-- предупреждает, если пользовательские расширения отключены или нет входа в Claude Code.
+- checks the dependencies and the GNOME Shell version;
+- clones the repository into `~/.local/share/gnome-shell/extensions/claude-usage@neorcage`;
+- enables the extension right away, so you don't have to turn it on in the Extensions app;
+- warns you if user extensions are turned off or you aren't signed in to Claude Code.
 
-После первой установки один раз выйдите из сеанса и войдите снова: на Wayland GNOME Shell находит новые расширения
-только при запуске.
+After the first install, log out and back in once: on Wayland, GNOME Shell only discovers new extensions at startup.
 
-## Обновление
+## Updating
 
-Та же команда или скрипт из установленной папки:
+Run the same command, or the script from the installed folder:
 
 ```bash
 ~/.local/share/gnome-shell/extensions/claude-usage@neorcage/install.sh
 ```
 
-Скрипт подтягивает изменения и говорит, нужен ли повторный вход. Изменения в `usage_helper.py` подхватываются
-сами в течение минуты. Для изменений в `extension.js` и `stylesheet.css` нужно выйти из сеанса и войти снова.
+The script pulls the changes and tells you whether you need to log in again. Changes to `usage_helper.py` take effect
+on their own within a minute. Changes to `extension.js` and `stylesheet.css` need a logout and login.
 
-## Удаление
+## Uninstalling
 
 ```bash
 gnome-extensions disable claude-usage@neorcage
 rm -rf ~/.local/share/gnome-shell/extensions/claude-usage@neorcage ~/.cache/claude-usage-indicator
 ```
 
-## Как это работает
+## How it works
 
-- `extension.js` рисует индикатор и меню. Раз в минуту он запускает `usage_helper.py` отдельным процессом, чтобы
-  разбор логов не подвешивал оболочку.
-- `usage_helper.py` собирает данные и печатает один JSON:
-  - **лимиты** запрашиваются из того же эндпоинта, что использует команда `/usage` в Claude Code
-    (`api.anthropic.com/api/oauth/usage`), не чаще раза в 3 минуты. При открытии меню они перезапрашиваются, если
-    старше минуты, а кнопка обновления перезапрашивает их сразу. Эндпоинт не документирован и может измениться;
-  - **тариф** берётся из `~/.claude.json`, который Claude Code сам держит актуальным;
-  - **токены** считаются по логам Claude Code `~/.claude/projects/**/*.jsonl`. Файлы читаются инкрементально,
-    повторы одного ответа отбрасываются. Claude Code удаляет логи старше 30 дней, поэтому итоги по прошедшим дням
-    сохраняются в кэше, и «Всё время» не обнуляется.
-- Кэш лежит в `~/.cache/claude-usage-indicator/cache.json`.
-- Переменная `CLAUDE_CONFIG_DIR` учитывается, если Claude Code настроен на другую папку.
+- `extension.js` draws the indicator and the menu. Once a minute it runs `usage_helper.py` as a separate process, so
+  parsing logs never blocks the shell.
+- `usage_helper.py` collects the data and prints a single JSON document:
+  - **limits** come from the same endpoint that Claude Code's `/usage` command uses
+    (`api.anthropic.com/api/oauth/usage`), fetched at most once every 3 minutes. Opening the menu refetches them if
+    they're more than a minute old, and the refresh button refetches them right away. The endpoint is undocumented and
+    may change;
+  - **the plan** is read from `~/.claude.json`, which Claude Code keeps up to date;
+  - **tokens** are counted from Claude Code's logs in `~/.claude/projects/**/*.jsonl`. Files are read incrementally,
+    and repeated entries for the same response are dropped. Claude Code deletes logs older than 30 days, so totals for
+    past days are kept in the cache and the all-time count doesn't reset.
+- The cache lives in `~/.cache/claude-usage-indicator/cache.json`.
+- `CLAUDE_CONFIG_DIR` is respected if Claude Code is set up to use a different folder.
 
-### Токен и приватность
+### Token and privacy
 
-Access-токен читается из `~/.claude/.credentials.json` и отправляется только на `api.anthropic.com`. Сам токен
-расширение не обновляет, чтобы не конфликтовать с Claude Code. Если он истёк, запустите `claude`, и данные
-обновятся. Логи разбираются локально и никуда не отправляются.
+The access token is read from `~/.claude/.credentials.json` and sent only to `api.anthropic.com`. The extension never
+refreshes the token itself, so it doesn't conflict with Claude Code. If the token has expired, run `claude` and the
+data will update. Logs are parsed locally and never leave your machine.
 
-## Отладка
+## Debugging
 
-Запустить сборщик вручную и посмотреть, что он отдаёт:
+Run the collector by hand to see what it outputs:
 
 ```bash
 python3 ~/.local/share/gnome-shell/extensions/claude-usage@neorcage/usage_helper.py --pretty
 ```
 
-Логи расширения:
+Extension logs:
 
 ```bash
 journalctl -f -o cat /usr/bin/gnome-shell | grep "Claude Usage"
