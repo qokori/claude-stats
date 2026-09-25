@@ -27,34 +27,32 @@
 
 ## Установка
 
-Имя папки должно совпадать с `uuid` из `metadata.json`, поэтому клонируйте сразу в неё:
+Одна команда (репозиторий приватный, поэтому нужен [`gh`](https://cli.github.com) с выполненным `gh auth login`):
 
 ```bash
-gh repo clone qokori/claude-stats ~/.local/share/gnome-shell/extensions/claude-usage@neorcage
+gh api -H 'Accept: application/vnd.github.raw' repos/qokori/claude-stats/contents/install.sh | bash
 ```
 
-или без `gh`:
+Скрипт `install.sh`:
 
-```bash
-git clone https://github.com/qokori/claude-stats.git ~/.local/share/gnome-shell/extensions/claude-usage@neorcage
-```
+- проверяет зависимости и версию GNOME Shell;
+- клонирует репозиторий в `~/.local/share/gnome-shell/extensions/claude-usage@neorcage`;
+- сразу включает расширение, поэтому отдельно включать его в «Расширениях» не нужно;
+- предупреждает, если пользовательские расширения отключены или нет входа в Claude Code.
 
-Выйдите из сеанса и войдите снова: GNOME Shell находит новые расширения только при запуске. Затем включите расширение:
-
-```bash
-gnome-extensions enable claude-usage@neorcage
-```
-
-или в приложении «Расширения».
+После первой установки один раз выйдите из сеанса и войдите снова: на Wayland GNOME Shell находит новые расширения
+только при запуске.
 
 ## Обновление
 
+Та же команда или скрипт из установленной папки:
+
 ```bash
-git -C ~/.local/share/gnome-shell/extensions/claude-usage@neorcage pull
+~/.local/share/gnome-shell/extensions/claude-usage@neorcage/install.sh
 ```
 
-Изменения в `usage_helper.py` подхватываются при следующем обновлении данных, в течение минуты. Изменения в
-`extension.js` и `stylesheet.css` вступают в силу после повторного входа в сеанс.
+Скрипт подтягивает изменения и говорит, нужен ли повторный вход. Изменения в `usage_helper.py` подхватываются
+сами в течение минуты. Для изменений в `extension.js` и `stylesheet.css` нужно выйти из сеанса и войти снова.
 
 ## Удаление
 
