@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Installs or updates the Claude Usage GNOME Shell extension.
 #
-#   gh api -H 'Accept: application/vnd.github.raw' repos/qokori/claude-stats/contents/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/qokori/claude-stats/main/install.sh | bash
 #
 # The extension directory is a git clone, so running the script again updates it.
 
@@ -36,19 +36,6 @@ enable_extension() {
     settings_list disabled-extensions remove
 }
 
-clone() {
-    mkdir -p "$(dirname "$DEST")"
-    if command -v gh >/dev/null && gh auth status >/dev/null 2>&1; then
-        gh repo clone "$REPO" "$DEST" -- --quiet </dev/null
-        # Later updates (git pull) authenticate through gh as well.
-        git -C "$DEST" config credential.helper ''
-        git -C "$DEST" config --add credential.helper '!gh auth git-credential'
-    else
-        GIT_TERMINAL_PROMPT=0 git clone --quiet "https://github.com/$REPO.git" "$DEST" </dev/null ||
-            die "Не удалось скачать $REPO. Репозиторий приватный: установите gh и выполните gh auth login"
-    fi
-}
-
 main() {
     for cmd in git python3 gsettings gnome-extensions; do
         command -v "$cmd" >/dev/null || die "Не найдена команда $cmd"
@@ -63,7 +50,9 @@ main() {
     elif [ -e "$DEST" ]; then
         die "$DEST уже существует и это не git-клон. Перенесите или удалите папку и запустите скрипт снова"
     else
-        clone
+        mkdir -p "$(dirname "$DEST")"
+        GIT_TERMINAL_PROMPT=0 git clone --quiet "https://github.com/$REPO.git" "$DEST" </dev/null ||
+            die "Не удалось скачать https://github.com/$REPO"
         fresh=1
     fi
 

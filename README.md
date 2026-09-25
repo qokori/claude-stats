@@ -27,10 +27,15 @@
 
 ## Установка
 
-Одна команда (репозиторий приватный, поэтому нужен [`gh`](https://cli.github.com) с выполненным `gh auth login`):
+```bash
+curl -fsSL https://raw.githubusercontent.com/qokori/claude-stats/main/install.sh | bash
+```
+
+Если не хотите запускать скрипт из сети, склонируйте репозиторий и запустите его локально:
 
 ```bash
-gh api -H 'Accept: application/vnd.github.raw' repos/qokori/claude-stats/contents/install.sh | bash
+git clone https://github.com/qokori/claude-stats.git ~/.local/share/gnome-shell/extensions/claude-usage@neorcage
+~/.local/share/gnome-shell/extensions/claude-usage@neorcage/install.sh
 ```
 
 Скрипт `install.sh`:
