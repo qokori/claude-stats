@@ -1,0 +1,7 @@
+{
+  "uuid": "claude-usage@neorcage",
+  "name": "Claude Usage",
+  "description": "Лимиты тарифа Claude и расход токенов Claude Code в верхней панели",
+  "shell-version": ["48", "49", "50"],
+  "version": 1
+}

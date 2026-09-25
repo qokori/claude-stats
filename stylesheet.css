@@ -1,0 +1,102 @@
+.claude-usage-panel-label {
+  padding-left: 4px;
+  font-feature-settings: "tnum";
+}
+
+.claude-usage-panel-label.warn { color: #ffa348; }
+.claude-usage-panel-label.crit { color: #ff7b63; }
+
+.claude-usage-menu {
+  min-width: 380px;
+}
+
+.claude-usage-header {
+  spacing: 8px;
+}
+
+.claude-usage-title {
+  font-weight: bold;
+}
+
+.claude-usage-badge {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 1px 8px;
+  border-radius: 99px;
+  background-color: rgba(127, 127, 127, 0.22);
+}
+
+.claude-usage-status {
+  spacing: 8px;
+}
+
+.claude-usage-status-label {
+  color: #e5a50a;
+  max-width: 330px;
+}
+
+.claude-usage-limit {
+  spacing: 4px;
+}
+
+.claude-usage-limit-percent {
+  font-weight: bold;
+  font-feature-settings: "tnum";
+}
+
+.claude-usage-bar {
+  height: 6px;
+  min-height: 6px;
+  border-radius: 3px;
+  background-color: rgba(127, 127, 127, 0.25);
+}
+
+.claude-usage-bar-fill {
+  border-radius: 3px;
+  background-color: -st-accent-color;
+}
+
+.claude-usage-bar-fill.warn { background-color: #e5a50a; }
+.claude-usage-bar-fill.crit { background-color: #e01b24; }
+
+.claude-usage-small {
+  font-size: 0.85em;
+}
+
+.claude-usage-section-title {
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.claude-usage-cell {
+  font-feature-settings: "tnum";
+  padding: 2px 0;
+}
+
+.claude-usage-num {
+  padding-left: 18px;
+}
+
+.claude-usage-icon-button {
+  padding: 6px;
+  border-radius: 99px;
+}
+
+.claude-usage-icon-button:hover,
+.claude-usage-icon-button:focus {
+  background-color: rgba(127, 127, 127, 0.2);
+}
+
+.claude-usage-icon-button:active {
+  background-color: rgba(127, 127, 127, 0.32);
+}
+
+.claude-usage-value {
+  min-width: 56px;
+  text-align: right;
+}
+
+.popup-menu-item.claude-usage-compact {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
