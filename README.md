@@ -70,6 +70,27 @@ gnome-extensions disable claude-usage@neorcage
 rm -rf ~/.local/share/gnome-shell/extensions/claude-usage@neorcage ~/.cache/claude-usage-indicator
 ```
 
+## Claude Code status line
+
+`statusline.py` puts the model, context usage, plan limits, project and git branch into Claude Code's status line:
+
+```
+Opus 5.5 · контекст 45% · сессия 12% · неделя 40% · Trucks/frontend ⎇ team-dev
+```
+
+Values turn orange at 75% and red at 90%, and a limit that high also shows when it resets. The script only reads the
+data Claude Code passes to the status line, so it works without the GNOME extension. Plan limits appear when you're
+signed in with a claude.ai subscription.
+
+To turn it on, add this to `~/.claude/settings.json`:
+
+```json
+"statusLine": {
+  "type": "command",
+  "command": "python3 ~/.local/share/gnome-shell/extensions/claude-usage@neorcage/statusline.py"
+}
+```
+
 ## How it works
 
 - `extension.js` draws the indicator and the menu. Once a minute it runs `usage_helper.py` as a separate process, so

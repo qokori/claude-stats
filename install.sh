@@ -79,7 +79,7 @@ sys.exit(sys.argv[2] not in json.load(open(sys.argv[1]))["shell-version"])' "$DE
         bold "Установлено в $DEST. Чтобы расширение появилось в панели, $relogin."
     elif [ -z "$changed" ]; then
         bold "Уже установлена последняя версия."
-    elif grep -qvxE 'usage_helper\.py|README\.md|install\.sh|\.gitignore' <<<"$changed"; then
+    elif grep -qvxE 'usage_helper\.py|statusline\.py|README\.md|install\.sh|\.gitignore' <<<"$changed"; then
         bold "Обновлено. Чтобы применить изменения интерфейса, $relogin."
     else
         bold "Обновлено, данные в панели обновятся в течение минуты."
